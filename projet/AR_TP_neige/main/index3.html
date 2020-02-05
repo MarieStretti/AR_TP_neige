@@ -1,0 +1,64 @@
+<html>
+
+<head>
+  <script src="https://aframe.io/releases/1.0.3/aframe.min.js"></script>
+  <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
+  <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.13.1/dist/aframe-extras.min.js"></script>
+  <script src="perlin.js"></script>
+  <script src="//cdn.rawgit.com/donmccurdy/aframe-physics-system/v3.3.0/dist/aframe-physics-system.min.js"></script>
+</head>
+
+<body>
+  <script>
+    AFRAME.registerGeometry('example', {
+      schema: {
+        n: {
+          default: 20
+        },
+        res: {
+          default: 5
+        }
+      },
+
+      init: function (data) {
+        var geometry = new THREE.Geometry();
+        let MNT = main(data.n, data.res);
+        let vertices = [];
+        let n = MNT.length;
+        let m = MNT[0].length;
+        for (i = 0; i < n; i++) {
+          for (j = 0; j < m; j++) {
+            vertices.push(new THREE.Vector3((i - n / 2) * 0.5, MNT[i][j], (j - m / 2) * 0.5));
+          }
+        }
+        geometry.vertices = vertices;
+        // geometry.computeBoundingBox();
+        for (i = 0; i < n - 1; i++) {
+          for (j = 0; j < m - 1; j++) {
+            geometry.faces.push(new THREE.Face3(i * n + j, i * n + j + 1, (i + 1) * n + j));
+            geometry.faces.push(new THREE.Face3(i * n + j + 1, (i + 1) * n + 1 + j, (i + 1) * n + j));
+            console.log(i * n + j, i * n + j + 1, (i + 1) * n + j);
+            console.log(i * n + j + 1, (i + 1) * n + 1 + j, (i + 1) * n + j);
+          }
+        }
+        geometry.mergeVertices();
+        geometry.computeFaceNormals();
+        geometry.computeVertexNormals();
+        this.geometry = geometry;
+      }
+    });
+  </script>
+
+  <a-scene physics="debug: true">
+      <a-sphere dynamic-body position="0 10 -1" radius="0.5" src="./model/texture/snow_texture.jpg" color="#FFFFFF"
+        velocity="0,5,0"></a-sphere>
+      <a-entity static-body="shape: hull" geometry="primitive: example; n:10; res:5" src="./model/texture/rock.jpeg" color="#FFFFFF"></a-entity>
+
+    <!-- <a-entity camera></a-entity> -->
+    <a-entity camera look-controls position="0 1.6 5"></a-entity>
+
+  </a-scene>
+
+</body>
+
+</html>

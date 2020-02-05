@@ -5,6 +5,7 @@
   <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
   <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.13.1/dist/aframe-extras.min.js"></script>
   <script src="perlin.js"></script>
+  <script src="//cdn.rawgit.com/donmccurdy/aframe-physics-system/v3.3.0/dist/aframe-physics-system.min.js"></script>
 </head>
 
 <body>
@@ -27,7 +28,7 @@
         let m = MNT[0].length;
         for (i = 0; i < n; i++) {
           for (j = 0; j < m; j++) {
-            vertices.push(new THREE.Vector3((i-n/2)*0.2, MNT[i][j], (j-m/2)*0.2));
+            vertices.push(new THREE.Vector3((i - n / 2) * 0.5, MNT[i][j], (j - m / 2) * 0.5));
           }
         }
         geometry.vertices = vertices;
@@ -36,8 +37,6 @@
           for (j = 0; j < m - 1; j++) {
             geometry.faces.push(new THREE.Face3(i * n + j, i * n + j + 1, (i + 1) * n + j));
             geometry.faces.push(new THREE.Face3(i * n + j + 1, (i + 1) * n + 1 + j, (i + 1) * n + j));
-            console.log(i * n + j, i * n + j + 1, (i + 1) * n + j);
-            console.log(i * n + j + 1, (i + 1) * n + 1 + j, (i + 1) * n + j);
           }
         }
         geometry.mergeVertices();
@@ -48,35 +47,55 @@
     });
   </script>
 
-  <a-scene embedded arjs="debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
-    <a-marker type='barcode' value="2">
-      <a-sphere position="0 0 0" radius="0.5" material="roughness: 1." src="./model/texture/snow_texture.jpg"
-        color="#FF0000" mass="0.5"></a-sphere>
+  <a-scene embedded arjs="debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;" physics="debug: true">
+    <a-marker type='barcode' value="2" id="m2">
+      <!-- <a-entity id="container"></a-entity> -->
+      <a-sphere dynamic-body position="0 10 -20" radius="0.5" src="./model/texture/snow_texture.jpg" color="#FFFFFF" id="sphere"></a-sphere>
+      <!-- <a-entity dynamic-body="mass: 1; shape:sphere; radius:0.5" id="sphere" position="0 10 -20" src="./model/texture/snow_texture.jpg"></a-entity>-->
     </a-marker>
-    <a-marker type='barcode' value="3">
-      <a-entity geometry="primitive: example; n:10; res:5" src="./model/texture/rock.jpeg" color="#FFFFFF"></a-entity>
-      <a-entity id="container"></a-entity>
+    <a-marker type='barcode' value="3" id="m3">
+      <a-entity static-body="shape: hull" geometry="primitive: example; n:50; res:8" src="./model/texture/rock.jpeg"
+        color="#FFFFFF" rotation="90 0 0"></a-entity>
 
     </a-marker>
-    <!-- <a-sky color="#ECECEC"></a-sky> -->
+    <!-- <a-entity run></a-entity> -->
     <a-entity camera></a-entity>
-    <!-- <a-entity camera look-controls position="0 1.6 5"></a-entity> -->
 
   </a-scene>
 
-  <script>
+  <!-- <script>
+    let markerVisible = { m2: false};
+    let container = document.getElementById("container");
 
-    let container = document.querySelector("#container");
-    addBall();
+    AFRAME.registerComponent('registerevents', {
+      init: function () {
+        let marker = this.el;
 
-    function addBall() {
-      let x = 0
-      let y = 10
-      let z = 0
-      container.innerHTML += `<a-sphere dynamic-body position="${x} ${y} ${z}" radius="0.1" src="./model/texture/snow_texture.jpg" mass="0.5"></a-sphere>`
-    }
+        marker.addEventListener('mouseup', function(){
+          console.log("found");
+        })
 
-  </script>
+        marker.addEventListener('markerLost', function () {
+          console.log("dynamic");
+          let sphere = document.getElementById("sphere");
+          let t = sphere.innerHTML.split("static-body");
+          sphere.innerHTML = t[0]+"dynamic-body"+t[1];
+        });
+      }
+    });
+    /*AFRAME.registerComponent('run', {
+      init: function () {
+        this.m2 = document.querySelector("#m2");
+      },
+
+      tick: function (time, deltaTime) {
+        if (markerVisible["m2"]) {
+          container.innerHTML += '<a-sphere dynamic-body position="0 10 -20" radius="0.5" src="./model/texture/snow_texture.jpg" color="#FFFFFF" id="sphere"></a-sphere>'
+        }
+      }
+    });*/
+  </script>-->
+
 </body>
 
 </html>

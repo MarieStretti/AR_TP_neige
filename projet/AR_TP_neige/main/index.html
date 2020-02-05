@@ -1,13 +1,38 @@
 <html>
-  <head>
-    <script src="https://aframe.io/releases/1.0.3/aframe.min.js"></script>
-  </head>
-  <body>
-    <a-scene>
-      <a-sphere position="0 1.25 -5" radius="1.25" material="roughness: 1." src="./model/texture/snow_texture.jpg" color="#FFFFFF"
-      animation="property: object3D.position.x; to: 2.2; dir: alternate; dur: 2000; loop: true; rotation: 10, 0, 0"></a-sphere>
-      <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
-      <a-sky color="#ECECEC"></a-sky>
-    </a-scene>
-  </body>
+
+<head>
+  <script src="https://aframe.io/releases/1.0.3/aframe.min.js"></script>
+  <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
+  <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.13.1/dist/aframe-extras.min.js"></script>
+</head>
+
+<body>
+  <a-scene embedded arjs="debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
+    <a-marker type='barcode' value="2">
+      <a-entity id="container"></a-entity>
+      <!-- <a-sphere position="0 0 0" radius="0.5" material="roughness: 1." src="./model/texture/snow_texture.jpg"
+        color="#FF0000" mass="0.5"></a-sphere> -->
+    </a-marker>
+    <a-marker type='barcode' value="3">
+      <a-plane static-body position="0 0 0" rotation="-90 0 0" width="5" height="5"></a-plane>
+    </a-marker>
+    <!-- <a-sky color="#ECECEC"></a-sky> -->
+    <a-entity camera></a-entity>
+    <!-- <a-entity camera look-controls position="0 1.6 5"></a-entity> -->
+
+  </a-scene>
+
+  <script>
+    let container = document.querySelector("#container");
+    addBall();
+
+    function addBall() {
+      let x = 0
+      let y = 10
+      let z = 0
+      container.innerHTML += `<a-sphere dynamic-body position="${x} ${y} ${z}" radius="0.1" src="./model/texture/snow_texture.jpg" mass="0.5"></a-sphere>`
+    }
+  </script>
+</body>
+
 </html>

@@ -11,7 +11,7 @@ function main(n,res){
     for (i=0;i<n;i++){
         let resAux = [];
         for (j=0;j<n;j++){
-            resAux.push(5*perlin(i/res,j/res));
+            resAux.push(perlin(i/res,j/res));
         }
         result.push(resAux);
     }
